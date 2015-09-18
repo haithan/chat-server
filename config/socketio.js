@@ -63,17 +63,16 @@ module.exports = function (socketio) {
       socket.room = data.room;
       socket.userId = data.userId;
       socket.join(socket.room);
-      console.log('aaa');
 
       // emit get all messages of this room after join room
-      socket.emit('getMessage');
+      socket.emit('getMessage', {room: socket.room, userId: socket.userId});
     });
 
     socket.on('sendChat', function(data) {
-      socketio.to(socket.room).emit('updateChat', {username: socket.username, message: data.message, user_id: socket.user_id});
+      socketio.to(socket.room).emit('updateChat', {message: data.message, user_id: socket.userId});
 
       // emit notify chat to target user by target user's default room id
-      socket.broadcast.to(data.target_default_room).emit('notifyChat', {user_id: socket.user_id});
+      // socket.broadcast.to(data.target_default_room).emit('notifyChat', {user_id: socket.user_idƯ);
     });
 
     // send default room id to client's socket
