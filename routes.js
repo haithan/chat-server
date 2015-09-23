@@ -16,6 +16,7 @@ module.exports = function(app) {
   app.use('/api/notifications', require('./api/notification'));
   app.use('/api/default_rooms', require('./api/default_room'));
   app.use('/api/messages', require('./api/message'));
+  app.use('/api/fb_infos', require('./api/fb_info'));
 
   // app.use('/auth', require('./auth'));
   // app.route('/app/emojis.png')

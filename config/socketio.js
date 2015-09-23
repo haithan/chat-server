@@ -17,6 +17,7 @@ function onConnect(socket) {
 
   // Insert sockets below
   require('../api/match/match.socket').register(socket);
+  require('../api/fb_info/fb_info.socket').register(socket);
   require('../api/user/user.socket').register(socket);
   require('../api/block/block.socket').register(socket);
   require('../api/notification/notification.socket').register(socket);
