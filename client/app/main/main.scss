@@ -1,0 +1,187 @@
+$color-border: rgba(0, 0, 0, .10);
+$color-user-hover: #F7F7F7;
+$color-user-active: #DCDCDC;
+$color-badge-bg: #00BFFF;
+$color-current-user-message: #31b0d5;
+$color-user-message: #f1f0f0;
+
+.chat-app {
+  height: 100%;
+  position: relative;
+
+  .header {
+    height: 70px;
+    border-bottom: 1px solid $color-border;
+    color: #777;
+    font-size: 24px;
+
+    .text-center {
+      padding-top: 16px;
+
+      a {
+        text-decoration: none;
+        color: #777;
+        span {
+          color: #79D5B3;
+        }
+      }
+    }
+  }
+
+  .user-list {
+    border-right: 1px solid rgba(0, 0, 0, .30);
+    border-left: 1px solid $color-border;
+    height: 100%;
+    padding-left: 0px;
+    padding-right: 0px;
+
+    .scroller {
+      overflow-y: hidden;
+      position: relative;
+
+      .user-row {
+        height: 70px;
+        border-bottom: 1px solid $color-border;
+        cursor: pointer;
+
+        img {
+          margin-left: 10px;
+          margin-right: 10px;
+          height: 60px;
+          border-radius: 35px;
+          margin-top: 5px;
+        }
+
+        &:hover {
+          background-color: $color-user-hover;
+        }
+
+        .badge {
+          margin-left: 10px;
+          background-color: $color-badge-bg;
+        }
+
+        .fa {
+            float: right;
+            margin-top: 25px;
+            font-size: 18px;
+            margin-right: 20px;
+        }
+      }
+      .user-row.active {
+        background-color: $color-user-active;
+      }
+    }
+  }
+
+  .chat-wrapper {
+    height: 100%;
+    padding-left: 0px;
+    padding-right: 0px;
+    border-right: 1px solid $color-border;
+
+    #chatContent {
+      overflow-y: hidden;
+      position: relative;
+      border-bottom: 1px solid $color-border;
+      padding: 10px 15px 10px 15px;
+      margin-right: 0px;
+      margin-left: 0px;
+
+      .message-wrapper {
+        width: 55%;
+        word-break: break-all;
+        margin-top: 3px;
+        margin-bottom: 3px;
+
+        .message-border {
+          background-color: $color-user-message;
+          padding: 4px 10px 4px 10px;
+          border: 1px solid $color-user-message;
+          border-radius: 20px;
+          display:-moz-inline-stack;
+          display:inline-block;
+          zoom:1;
+          *display:inline;
+          margin-left: 10px;
+          max-width: 90%;
+          white-space: pre-wrap;
+        }
+
+        img {
+          width: 30px;
+          border-radius: 20px;
+        }
+      }
+
+      .message-wrapper.pull-right {
+        color: white;
+        .message-border {
+          max-width: 100%;
+          background-color: $color-current-user-message;
+          border: 1px solid $color-current-user-message;
+        }
+      }
+
+      .message-image {
+        max-height: 400px;
+        border: 1px solid $color-border;
+        border-radius: 20px;
+      }
+
+      .error-message {
+        font-size: 20px;
+      }
+    }
+
+    .chat-input {
+      height: 80px;
+      -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+      -moz-user-select: none; /* mozilla browsers */
+      -khtml-user-select: none; /* webkit (konqueror) browsers */
+      -ms-user-select: none; /* IE10+ */
+
+      .chat-message {
+        height: 80px;
+        border-style: none;
+        border-color: transparent;
+        overflow: auto;
+      }
+
+      .btn-wrapper {
+        .fa {
+          cursor: pointer;
+          font-size: 2.1875em; /* 35/16 */
+          margin-top: 0.9375em;
+          color: grey;
+          margin-right: 0.625em; /* 10/16 */
+
+          &:active {
+            color: #79D5B3;
+          }
+        }
+      }
+
+      .emoji-popup {
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        top: -250px;
+        left: -50px;
+        border: 1px solid $color-border;
+        border-radius: 5px;
+        background-color: #fff;
+
+        .emoji {
+          margin-right: 1em;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .ps-scrollbar-x-rail {
+    display: none !important;
+  }
+
+}

@@ -73,7 +73,7 @@ module.exports = function (socketio) {
       socketio.to(socket.room).emit('updateChat', {message: data.message, user_id: socket.userId});
 
       // emit notify chat to target user by target user's default room id
-      // socket.broadcast.to(data.target_default_room).emit('notifyChat', {user_id: socket.user_idƯ);
+      socket.broadcast.to(data.target_default_room).emit('notifyChat', {user_id: socket.userId});
     });
 
     // send default room id to client's socket

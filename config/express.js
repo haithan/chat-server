@@ -6,6 +6,8 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 
 var cors = require('cors');
+var path = require('path');
+var sassMiddleware = require('node-sass-middleware');
 
 module.exports = function(app, config) {
   var env = process.env.NODE_ENV || 'development';
@@ -25,6 +27,17 @@ module.exports = function(app, config) {
   app.use(compress());
 
   app.use(cors());
+  app.set('appPath', path.join(config.root, 'client'));
+
+  app.use(
+    sassMiddleware({
+      src: '/',
+      dest: '/',
+      debug: true
+    })
+  );
+
+  app.use(express.static(path.join(config.root, 'client')));
 
   // var controllers = glob.sync(config.root + '/app/controllers/*.js');
   // controllers.forEach(function (controller) {

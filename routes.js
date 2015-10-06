@@ -5,7 +5,8 @@
 'use strict';
 
 // var errors = require('./components/errors');
-// var path = require('path');
+var config = require('./config/config');
+var path = require('path');
 
 module.exports = function(app) {
 
@@ -17,6 +18,11 @@ module.exports = function(app) {
   app.use('/api/default_rooms', require('./api/default_room'));
   app.use('/api/messages', require('./api/message'));
   app.use('/api/fb_infos', require('./api/fb_info'));
+
+  // app.get('/', function(req, res) {
+  //   var myCookie = jwt.verify(req.cookies.x_user, config.secret_key);
+  //   res.send(myCookie);
+  // });
 
   // app.use('/auth', require('./auth'));
   // app.route('/app/emojis.png')
@@ -34,9 +40,17 @@ module.exports = function(app) {
   //     res.sendFile(path.resolve(app.get('appPath') + '/index.html/' + req.params.session_id))
   //   });
 
+  app.route('/auth')
+    .get(function(req,res) {
+      var auth = require('./auth/auth');
+      auth.authenticateWeb(req.cookies, function(id) {
+        res.send({user_id: id});
+      });
+    });
+
   // All other routes should redirect to the index.html
-  // app.route('/*')
-  //   .get(function(req, res) {
-  //     res.sendFile(path.resolve(app.get('appPath') + '/index.html'));
-  //   });
+  app.route('/*')
+    .get(function(req, res) {
+      res.sendFile(path.resolve(app.get('appPath') + '/index.html'));
+    });
 };

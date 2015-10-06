@@ -21,6 +21,7 @@ require('./config/express')(app, config);
 
 var server = require('http').createServer(app);
 var socketio = require('socket.io')(server);
+
 require('./config/socketio')(socketio);
 
 
