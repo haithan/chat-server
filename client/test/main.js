@@ -1,20 +1,30 @@
 describe('Chat', function() {
-  beforeEach(module('chatApp'));
+  var scope, createController;
 
-  var ctrl, scope;
   // inject the $controller and $rootScope services
   // in the beforeEach block
-  beforeEach(inject(function($rootScope, $http, $controller, socket) {
-    // Create a new scope that's a child of the $rootScope
-    scope = $rootScope.$new();
-    // Create the controller
-    ctrl = $controller('MainCtrl', {
-      $scope: scope
-    });
-  }));
+  beforeEach(module('chatApp'));
+  beforeEach(function() {
 
-  it('should create $scope.emojiPopup equal false', function() {
-    console.log("scope = ", scope);
-    expect(scope.greeting).toBeUndefined();
-  })
+    inject(function($rootScope, $controller) {
+      // Create a new scope that's a child of the $rootScope
+      scope = $rootScope.$new();
+      // Create the controller
+      createController = function() {
+        return $controller('MainCtrl', {
+          $scope: scope,
+        });
+      }
+    });
+  });
+  
+  it('emojiPopup should be defined', function() {
+    var ctrl = createController();
+    expect(scope.emojiPopup).toBeDefined();
+  });
+
+  it('emojiPopup shoule be equal false', function() {
+    var ctrl = createController();
+    expect(scope.emojiPopup).toBe(false);
+  });
 })
