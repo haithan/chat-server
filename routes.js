@@ -18,6 +18,7 @@ module.exports = function(app) {
   app.use('/api/default_rooms', require('./api/default_room'));
   app.use('/api/messages', require('./api/message'));
   app.use('/api/fb_infos', require('./api/fb_info'));
+  app.use('/api/gcms', require('./api/gcm'));
 
   // app.get('/', function(req, res) {
   //   var myCookie = jwt.verify(req.cookies.x_user, config.secret_key);

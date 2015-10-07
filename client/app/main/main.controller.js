@@ -4,15 +4,15 @@ angular.module('chatApp')
   .controller('MainCtrl', function ($scope, $http, socket, $location, $rootScope,
                                     $cookieStore, chatUtils, chatFilters, authService,
                                     matchsService, defaultRoomsService, notificationsService,
-                                    blocksService, messagesService, $window, userService) {
+                                    blocksService, messagesService, $window, userService, gcmsService) {
     var userId = '';
     var targetUserId = '';
-    var authKey = $location.search().auth_key;
     var currentUserName = '';
     var targetUserName = '';
     var sessionId = '';
     var targetAvatarUrl = '';
     var messageTo = '';
+    var targetUserGgIds = '';
     $scope.emojiPopup = false;
     $scope.emojis = ['bowtie', 'smile', 'laughing', 'blush', 'smiley', 'relaxed',
             'smirk', 'heart_eyes', 'kissing_heart', 'kissing_closed_eyes', 'flushed',
@@ -111,6 +111,14 @@ angular.module('chatApp')
       $('.user-row').removeClass('active');
       $($event.currentTarget).addClass('active');
 
+      targetUserId = '';
+      currentUserName = '';
+      targetUserName = '';
+      sessionId = '';
+      targetAvatarUrl = '';
+      messageTo = '';
+      targetUserGgIds = '';
+
       // check if current user can access this room or not
       // matchsService.checkRoomPermission(user.session_id, userId)
       //   .success(function(data) {
@@ -131,6 +139,9 @@ angular.module('chatApp')
       targetAvatarUrl = user.avatar_url;
       targetUserId = user.user_id;
       sessionId = user.session_id;
+      gcmsService.getGcmIds(targetUserId).success(function(data) {
+        targetUserGgIds = data.gcm_ids;
+      })
 
       // delete all notification of this room when joined
       deleteNotifications();
@@ -217,11 +228,11 @@ angular.module('chatApp')
     var getDefaultRoomOfTargetUser = function(callback) {
       defaultRoomsService.getDefaultRoom(targetUserId)
         .success(function(data) {
-          socket.emit('sendChat', {message: messageTo, target_default_room: data.room_id});
+          socket.emit('sendChat', {message: messageTo, target_default_room: data.room_id, targetUserGgIds: targetUserGgIds});
           callback(null);
         })
         .error(function() {
-          socket.emit('sendChat', {message: messageTo});
+          socket.emit('sendChat', {message: messageTo, targetUserGgIds: targetUserGgIds});
           callback(null);
         });
     };
@@ -240,11 +251,13 @@ angular.module('chatApp')
 
         // get image link from text message
         var url = chatUtils.getUrlFromText(data.message);
-        chatUtils.isImage(url).then(function(result) {
-          if (result === true) {
-            chat.image_url = url;
-          }
-        });
+        if (url) {
+          chatUtils.isImage(url).then(function(result) {
+            if (result === true) {
+              chat.image_url = url;
+            }
+          });
+        }
       }
 
       if ( data.user_id != userId ) {

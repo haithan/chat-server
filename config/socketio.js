@@ -4,6 +4,10 @@
 
 'use strict';
 
+var Gcm = require('../api/gcm/gcm.model');
+var nodeGcm = require('node-gcm');
+var config = require('./config');
+
 // When the user disconnects.. perform this
 function onDisconnect(socket) {
 }
@@ -23,6 +27,7 @@ function onConnect(socket) {
   require('../api/notification/notification.socket').register(socket);
   require('../api/default_room/default_room.socket').register(socket);
   require('../api/message/message.socket').register(socket);
+  require('../api/gcm/gcm.socket').register(socket);
 }
 
 module.exports = function (socketio) {
@@ -74,6 +79,24 @@ module.exports = function (socketio) {
 
       // emit notify chat to target user by target user's default room id
       socket.broadcast.to(data.target_default_room).emit('notifyChat', {user_id: socket.userId});
+      if (data.targetUserGgIds) {
+
+        var message = new nodeGcm.Message();
+        message.addNotification('title', 'Bạn có tin nhắn mới');
+        message.addNotification('icon', 'ic_launcher');
+        message.addNotification('body', data.message);
+
+        var regIds = data.targetUserGgIds;
+        var sender = new nodeGcm.Sender(config.ggSenderId);
+
+        sender.send(message, regIds, function(err, result) {
+          if(err) {
+            console.error(err);
+          } else {
+            console.log(result);
+          }
+        });
+      }
     });
 
     // send default room id to client's socket

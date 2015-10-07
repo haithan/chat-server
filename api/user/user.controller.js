@@ -22,7 +22,6 @@ exports.show = function(req, res) {
 
 // Creates a new user in the DB.
 exports.create = function(req, res) {
-  console.log(req.body);
   User.create(req.body, function(err, user) {
     if(err) { return handleError(res, err); }
     return res.status(201).json(user);
