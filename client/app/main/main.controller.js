@@ -32,12 +32,14 @@ angular.module('chatApp')
           authenticate(data);
         })
         .error(function() {
+          alert('Loi cmnr 1');
           $window.location.href = 'http://ymeet.me';
         })
     });
 
     var authenticate = function(data) {
       if (data.user_id === false) {
+        alert('Loi cmnr 2');
         $window.location.href = 'http://ymeet.me';
         return;
       }
