@@ -32,14 +32,14 @@ angular.module('chatApp')
           authenticate(data);
         })
         .error(function() {
-          alert('Loi cmnr 1');
+          alert('Có lỗi kết nối. Vui lòng liên hệ admin để kiểm tra. Xin cám ơn.');
           $window.location.href = 'http://ymeet.me';
         })
     });
 
     var authenticate = function(data) {
       if (data.user_id === false) {
-        alert('Loi cmnr 2');
+        alert('Bạn chưa đăng ký dịch vụ ymeet.me . Vui lòng đăng ký trước khi sử dụng dịch vụ chat. Xin cám ơn.');
         $window.location.href = 'http://ymeet.me';
         return;
       }
