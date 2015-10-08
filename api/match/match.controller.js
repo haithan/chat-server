@@ -21,10 +21,12 @@ exports.show = function(req, res) {
 
 // Creates a new match in the DB.
 exports.create = function(req, res) {
-  Match.create(req.body, function(err, match) {
-    if(err) { return handleError(res, err); }
-    return res.status(201).json(match);
-  });
+  if (req.body.source_id && req.body.target_id && req.body.session_id) {
+    Match.create(req.body, function(err, match) {
+      if(err) { return handleError(res, err); }
+      return res.status(201).json(match);
+    });
+  }
 };
 
 // Updates an existing match in the DB.

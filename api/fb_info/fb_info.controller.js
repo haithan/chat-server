@@ -5,18 +5,28 @@ var FbInfo = require('./fb_info.model');
 
 // Get list of matchs by user_id
 exports.show = function(req, res) {
-  FbInfo.findOne({fb_uid: req.params.id}, function (err, fb_info) {
-    if(err) { return handleError(res, err); }
-    return res.status(200).json(fb_info);
-  });
+  if (req.params.id) {
+    FbInfo.findOne({fb_uid: req.params.id}, function (err, fb_info) {
+      if(err) { return handleError(res, err); }
+      return res.status(200).json(fb_info);
+    });
+  } else {
+    return res.sendStatus(403);
+  }
 };
 
 // Creates a new fb_info in the DB.
 exports.create = function(req, res) {
-  FbInfo.create(req.body, function(err, fb_info) {
-    if(err) { return handleError(res, err); }
-    return res.status(201).json(fb_info);
-  });
+  if (req.body.fb_uid && req.body.user_id) {
+    FbInfo.findOne({user_id: req.body.user_id}, function (err, fb_info) {
+      if (err) {
+        FbInfo.create(req.body, function(err, fb_info) {
+          if(err) { return handleError(res, err); }
+          return res.status(201).json(fb_info);
+        });
+      }
+    })
+  }
 };
 
 function handleError(res, err) {

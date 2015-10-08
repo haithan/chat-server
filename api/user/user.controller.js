@@ -13,33 +13,45 @@ exports.index = function(req, res) {
 
 // Get a single user
 exports.show = function(req, res) {
-  User.findOne({user_id: req.params.id}, function (err, user) {
-    if(err) { return handleError(res, err); }
-    if(!user) { return res.status(404).send('Not Found'); }
-    return res.json(user);
-  });
+  if (req.params.id) {
+    User.findOne({user_id: req.params.id}, function (err, user) {
+      if(err) { return handleError(res, err); }
+      if(!user) { return res.status(404).send('Not Found'); }
+      return res.json(user);
+    });
+  } else {
+    return res.sendStatus(403);
+  }
 };
 
 // Creates a new user in the DB.
 exports.create = function(req, res) {
-  User.create(req.body, function(err, user) {
-    if(err) { return handleError(res, err); }
-    return res.status(201).json(user);
-  });
+  if (req.body.user_id) {
+    User.findOne({user_id: req.body.user_id}, function (err, user) {
+      if (err) {
+        User.create(req.body, function(err, user) {
+          if(err) { return handleError(res, err); }
+          return res.status(201).json(user);
+        });
+      }
+    })
+  }
 };
 
 // Updates an existing user in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
-  User.findOne({user_id: req.params.id}, function (err, user) {
-    if (err) { return handleError(res, err); }
-    if(!user) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(user, req.body);
-    updated.save(function (err) {
+  if (req.params.id && req.body.name && req.body.avatar_url) {
+    User.findOne({user_id: req.params.id}, function (err, user) {
       if (err) { return handleError(res, err); }
-      return res.status(200).json(user);
+      if(!user) { return res.status(404).send('Not Found'); }
+      var updated = _.merge(user, req.body);
+      updated.save(function (err) {
+        if (err) { return handleError(res, err); }
+        return res.status(200).json(user);
+      });
     });
-  });
+  }
 };
 
 // Deletes a user from the DB.
