@@ -19,13 +19,14 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
   if (req.body.fb_uid && req.body.user_id) {
     FbInfo.findOne({user_id: req.body.user_id}, function (err, fb_info) {
-      if (err) {
-        FbInfo.create(req.body, function(err, fb_info) {
-          if(err) { return handleError(res, err); }
-          return res.status(201).json(fb_info);
-        });
-      }
+      if ( fb_info )  { return res.status(403).send('Already exists!'); }
+      FbInfo.create(req.body, function(err, fb_info) {
+        if(err) { return handleError(res, err); }
+        return res.status(201).json(fb_info);
+      });
     })
+  } else {
+    return res.sendStatus(403);
   }
 };
 

@@ -22,10 +22,15 @@ exports.show = function(req, res) {
 // Creates a new match in the DB.
 exports.create = function(req, res) {
   if (req.body.source_id && req.body.target_id && req.body.session_id) {
-    Match.create(req.body, function(err, match) {
-      if(err) { return handleError(res, err); }
-      return res.status(201).json(match);
-    });
+    Match.findOne({source_id: req.body.source_id, target_id: req.body.target_id, session_id: req.body.session_id}, function(err, match) {
+      if (match) { return res.sendStatus(403); }
+      Match.create(req.body, function(err, match) {
+        if(err) { return handleError(res, err); }
+        return res.status(201).json(match);
+      });
+    })
+  } else {
+    return res.sendStatus(403);
   }
 };
 

@@ -28,13 +28,14 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
   if (req.body.user_id) {
     User.findOne({user_id: req.body.user_id}, function (err, user) {
-      if (err) {
-        User.create(req.body, function(err, user) {
-          if(err) { return handleError(res, err); }
-          return res.status(201).json(user);
-        });
-      }
+      if (user) { return res.status(403).send('Already exist!'); }
+      User.create(req.body, function(err, user) {
+        if(err) { return handleError(res, err); }
+        return res.status(201).json(user);
+      });
     })
+  } else {
+    return res.status(403).send(req.body);
   }
 };
 
