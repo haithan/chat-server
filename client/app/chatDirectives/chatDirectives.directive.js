@@ -27,3 +27,16 @@ angular.module('chatApp')
       }
     };
   })
+
+  .directive('autoFocus', ['$timeout', function($timeout) {
+    return {
+      restrict: 'A',
+      link : function(scope, iElement) {
+        $timeout(function() {
+          scope.$watch('autoFocus', function () {
+            iElement[0].focus();
+          });
+        }, 0);
+      }
+    }
+  }]);

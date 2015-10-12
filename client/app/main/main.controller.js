@@ -4,7 +4,7 @@ angular.module('chatApp')
   .controller('MainCtrl', function ($scope, $http, socket, $location, $rootScope,
                                     $cookieStore, chatUtils, chatFilters, authService,
                                     matchsService, defaultRoomsService, notificationsService,
-                                    blocksService, messagesService, $window, userService, gcmsService) {
+                                    blocksService, messagesService, $window, userService, gcmsService, $timeout) {
     var userId = '';
     var targetUserId = '';
     var currentUserName = '';
@@ -62,6 +62,9 @@ angular.module('chatApp')
 
       async.each(users, initUser, function(err) {
         $scope.users = users;
+
+        // auto join first room when open page
+        $scope.joinRoom(users[0])
       });
 
       socket.emit('takeCurrentRoomId');
@@ -108,10 +111,14 @@ angular.module('chatApp')
     });
 
     // call join room when click user in user list
-    $scope.joinRoom = function($event, user) {
+    $scope.joinRoom = function(user, $event) {
       // add class active for user row, refresh text of chat content
-      $('.user-row').removeClass('active');
-      $($event.currentTarget).addClass('active');
+      if ( typeof $event !== 'undefined') {
+        $('.user-row').removeClass('active');
+        $($event.currentTarget).addClass('active');
+      } else {
+        $timeout(function() {$(".user-row:first").addClass('active');}, 100)
+      }
 
       targetUserId = '';
       currentUserName = '';

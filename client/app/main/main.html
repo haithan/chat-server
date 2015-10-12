@@ -4,7 +4,7 @@
       <p class="text-center">Danh sách</p>
     </div>
     <perfect-scrollbar class="scroller" wheel-propagation="true" wheel-speed="1" min-scrollbar-length="20">
-      <div ng-repeat="user in users" class="user-row" id={{user.user_id}} ng-click="joinRoom($event, user)" ng-mouseover="showBlock = true" ng-init="showBlock=false" ng-mouseleave="showBlock = false">
+      <div ng-repeat="user in users" class="user-row" id={{user.user_id}} ng-click="joinRoom(user, $event)" ng-mouseover="showBlock = true" ng-init="showBlock=false" ng-mouseleave="showBlock = false">
         <img fallback-src="assets/images/default_user.jpg" ng-src={{user.avatar_url}} alt={{user.user_name}}>
         <span>{{user.user_name}}</span>
         <span class="badge" ng-show="user.noti_num > 0">{{user.noti_num}}</span>
@@ -32,13 +32,13 @@
     </perfect-scrollbar>
     <div class="row chat-input">
       <div class="col-sm-10">
-        <textarea class="form-control chat-message" ng-model="chatMessage" ng-keydown="$event.keyCode == 13 ? sendChatByKey($event) : null" placeholder="Nhập tin nhắn ..." autofocus>
+        <textarea class="form-control chat-message" ng-model="chatMessage" ng-keydown="$event.keyCode == 13 ? sendChatByKey($event) : null" placeholder="Nhập tin nhắn ..." auto-focus>
         </textarea>
       </div>
       <div class="col-sm-2 btn-wrapper text-center">
-        <span class="fa fa-smile-o" ng-click="showEmojiPopup()"></span>
+        <span class="fa fa-smile-o" id="showEmojiPopup" ng-click="showEmojiPopup()"></span>
         <span class="fa fa-paper-plane-o" ng-click="sendChat()"></span>
-        <div class="emoji-popup" ng-show="emojiPopup">
+        <div class="emoji-popup" ng-show="emojiPopup" click-outside="emojiPopup=false" outside-if-not="showEmojiPopup">
           <i ng-repeat="icon in emojis" class="emoji emoji_{{icon}}" title=":{{icon}}:" ng-click="appendEmojiToMessage(icon)"></i>
         </div>
       </div>
