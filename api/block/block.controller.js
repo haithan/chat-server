@@ -33,7 +33,9 @@ exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
   Block.findOne({source_id: req.params.source_id, target_id: req.params.target_id}, function (err, block) {
     if (err) { return handleError(res, err); }
-    if(!block) { return res.status(404).send('Not Found'); }
+    if(!block) {
+      Block.create({source_id: req.params.source_id, target_id: req.params.target_id, block: req.body.block});
+    }
     var updated = _.merge(block, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
