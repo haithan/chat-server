@@ -3,7 +3,7 @@
 angular.module('chatApp')
   .controller('MainCtrl', function ($scope, $http, socket, $location, $rootScope,
                                     $cookieStore, chatUtils, chatFilters, authService,
-                                    matchsService, defaultRoomsService, notificationsService,
+                                    matchsService, notificationsService,
                                     blocksService, messagesService, $window, userService, gcmsService, $timeout) {
     var userId = '';
     var targetUserId = '';
@@ -105,11 +105,6 @@ angular.module('chatApp')
         });
     };
 
-    // update or create new record that hold default room id, that info will be use in notification function
-    socket.on('updateDefaultRoomId', function(data) {
-      defaultRoomsService.updateOrCreateDefaultRoom(userId, data.room_id);
-    });
-
     // call join room when click user in user list
     $scope.joinRoom = function(user, $event) {
       // add class active for user row, refresh text of chat content
@@ -127,17 +122,6 @@ angular.module('chatApp')
       targetAvatarUrl = '';
       messageTo = '';
       targetUserGgIds = '';
-
-      // check if current user can access this room or not
-      // matchsService.checkRoomPermission(user.session_id, userId)
-      //   .success(function(data) {
-      //     if (data.status === undefined || data.status == 'bad_request') {
-      //       raiseBadRequestError();
-      //       return;
-      //     }
-
-      //     joinRoom(user);
-      //   })
 
       joinRoom(user);
     };
@@ -185,18 +169,7 @@ angular.module('chatApp')
       // erase chat message when sent
       $scope.chatMessage = '';
 
-      // check if current user is blocked by target user or not
-      blocksService.getBlockStatus(targetUserId, userId)
-        .success(function(data) {
-          if (data.block === true) {
-            return;
-          }
-
-          sendChat(message);
-        })
-        .error(function() {
-          sendChat(message);
-        });
+      socket.emit('sendChat', {message: message, targetUserGgIds: targetUserGgIds, targetUserId: targetUserId});
     };
 
      // handle case use shift+enter to break line chat
@@ -207,43 +180,6 @@ angular.module('chatApp')
         $event.preventDefault();
         $scope.sendChat();
       }
-    };
-
-    var sendChat = function(message) {
-      messageTo = message;
-      async.series([
-        saveNotification,
-        getDefaultRoomOfTargetUser
-        ], function(err, results) {
-        });
-
-      // save message into DB
-      messagesService.createMessage(sessionId, userId, message);
-    };
-
-    var saveNotification = function(callback) {
-      notificationsService.getNotificationNum(userId, targetUserId)
-        .success(function(data) {
-          var notiNum = data.noti_num + 1;
-          notificationsService.updateNotificationNum(userId, targetUserId, notiNum);
-          callback(null);
-        })
-        .error(function(data) {
-          notificationsService.createNotification(userId, targetUserId);
-          callback(null);
-        });
-    };
-
-    var getDefaultRoomOfTargetUser = function(callback) {
-      defaultRoomsService.getDefaultRoom(targetUserId)
-        .success(function(data) {
-          socket.emit('sendChat', {message: messageTo, target_default_room: data.room_id, targetUserGgIds: targetUserGgIds});
-          callback(null);
-        })
-        .error(function() {
-          socket.emit('sendChat', {message: messageTo, targetUserGgIds: targetUserGgIds});
-          callback(null);
-        });
     };
 
     socket.on('updateChat', function(data) {
@@ -279,18 +215,17 @@ angular.module('chatApp')
     };
 
     // notify chat when not in room
-    socket.on('notifyChat', function(data) {
-      var $userRow = $('#' + data.user_id);
-      // if user is currently in this room then return
-      if ( $userRow.hasClass('active') ) {
-        deleteNotifications();
-        return;
-      }
+    socket.on('notification:save', function(data) {
+      if (data && data.from_user_id && data.to_user_id && data.noti_num && data.to_user_id == userId) {
+        var $userRow = $('#' + data.from_user_id);
+        // if user is currently in this room then return
+        if ( $userRow.hasClass('active') ) {
+          deleteNotifications();
+          return;
+        }
 
-      notificationsService.getNotificationNum(data.user_id, userId)
-        .success(function(response) {
-          updateNotification(response.noti_num, data.user_id);
-        });
+        updateNotification(data.noti_num, data.from_user_id)
+      }
     });
 
     var deleteNotifications = function() {

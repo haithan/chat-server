@@ -35,6 +35,7 @@ exports.update = function(req, res) {
     if (err) { return handleError(res, err); }
     if(!block) {
       Block.create({source_id: req.params.source_id, target_id: req.params.target_id, block: req.body.block});
+      return res.sendStatus(201)
     }
     var updated = _.merge(block, req.body);
     updated.save(function (err) {
