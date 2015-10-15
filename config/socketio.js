@@ -119,7 +119,7 @@ module.exports = function (socketio) {
           Message.create({message: data.message, user_id: socket.userId, session_id: socket.room});
 
           // emit notify chat to target user by target user's default room id
-          if (data.targetUserGgIds) {
+          if (data.targetUserGgIds !== '') {
             notyMobile();
           }
 
