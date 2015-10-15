@@ -24,7 +24,8 @@ angular.module('chatApp', [
   })
 
   .factory('socket', function (socketFactory) {
-    var myIoSocket = io.connect('http://chat.lvh.me:8123');
+    // var myIoSocket = io.connect('http://chat.lvh.me:8123');
+    var myIoSocket = io.connect('http://chat.ymeet.me');
 
     var mySocket = socketFactory({
       ioSocket: myIoSocket
