@@ -128,11 +128,6 @@ module.exports = function (socketio) {
       });
     });
 
-    // send default room id to client's socket
-    socket.on('takeCurrentRoomId', function() {
-      socket.emit('updateDefaultRoomId', {room_id: socket.id});
-    });
-
     // Call onConnect.
     onConnect(socket);
     console.info('[%s] CONNECTED', socket.address);
