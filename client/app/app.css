@@ -7493,7 +7493,8 @@ body {
         height: 80px;
         border-style: none;
         border-color: transparent;
-        overflow: auto; }
+        overflow: auto;
+        resize: none; }
       .chat-app .chat-wrapper .chat-input .btn-wrapper .fa {
         cursor: pointer;
         font-size: 2.1875em;

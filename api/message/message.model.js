@@ -7,6 +7,7 @@ var MessageSchema = new Schema({
   session_id: String,
   user_id: Number,
   message: String,
+  deleted: {type: Boolean, default: false},
   created_time: {type: Date, default: Date.now}
 });
 

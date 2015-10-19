@@ -13,7 +13,7 @@ var Message = require('./message.model');
 
 // Get messages belong to a room
 exports.show = function(req, res) {
-  Message.find({session_id: req.params.session_id}, function (err, messages) {
+  Message.find({session_id: req.params.session_id, deleted: false}, function (err, messages) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(messages);
   });
@@ -25,6 +25,13 @@ exports.create = function(req, res) {
     if(err) { return handleError(res, err); }
     return res.status(201).json(message);
   });
+};
+
+exports.destroy = function(req, res) {
+  Message.update({session_id: req.params.session_id}, {deleted: true}, { multi: true }, function(err, num) {
+    if(err) { return handleError(res, err); }
+    return res.status(200).json({num: num});
+  })
 };
 
 // Updates an existing message in the DB.

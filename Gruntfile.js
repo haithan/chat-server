@@ -44,6 +44,17 @@ module.exports = function (grunt) {
           'app/views/**/*.jade'
         ],
         options: { livereload: reloadPort }
+      },
+      sass: {
+        dist: {
+          files: [{
+            expand: true,
+            cwd: 'styles',
+            src: ['*.scss'],
+            dest: '../public',
+            ext: '.css'
+          }]
+        }
       }
     }
   });
