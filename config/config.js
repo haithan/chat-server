@@ -35,7 +35,7 @@ var config = {
     port: 8123,
     db: 'mongodb://localhost/chat-server-production',
     secret_key: 'a0ef38ee4c364d973a023c1a8a7de51f10d6990ee7412166911c8ddfa5d9',
-    main_web: 'ymeet.me',
+    main_web: 'https://ymeet.me',
     ggSenderId: 'AIzaSyBmFcDkIMWiNTU8cClehEAR8s5Fr1cSlV4'
   }
 
