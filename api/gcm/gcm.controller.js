@@ -25,11 +25,16 @@ exports.update = function(req, res) {
         return res.status(201).json(gcm)
       })
     } else {
-      gcm.gcm_ids.push(req.body.gcm_id);
-      gcm.save(function (err) {
-        if (err) { return handleError(res, err); }
+      // check if gcm_id does not exist
+      if (gcm.gcm_ids.indexOf(req.body.gcm_id) !== -1) {
+        gcm.gcm_ids.push(req.body.gcm_id);
+        gcm.save(function (err) {
+          if (err) { return handleError(res, err); }
+          return res.status(200).json(gcm);
+        });
+      } else {
         return res.status(200).json(gcm);
-      });
+      }
     }
   });
 };
