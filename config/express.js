@@ -9,6 +9,8 @@ var cors = require('cors');
 var path = require('path');
 var sassMiddleware = require('node-sass-middleware');
 
+var httpApp = express();
+
 module.exports = function(app, config) {
   var env = process.env.NODE_ENV || 'development';
   app.locals.ENV = env;
@@ -63,7 +65,7 @@ module.exports = function(app, config) {
   }
 
   if (app.get('env') === 'production') {
-    app.get("*", function (req, res, next) {
+    httpApp.get("*", function (req, res, next) {
       res.redirect("https://" + req.header.host + "/" + req.path);
     });
   }
