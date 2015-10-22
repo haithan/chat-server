@@ -3,6 +3,13 @@
 var _ = require('lodash');
 var FbInfo = require('./fb_info.model');
 
+exports.index = function(req, res) {
+  FbInfo.find(function (err, fb_infos) {
+    if(err) { return handleError(res, err); }
+    return res.status(200).json(fb_infos);
+  });
+};
+
 // Get list of matchs by user_id
 exports.show = function(req, res) {
   if (req.params.id) {
