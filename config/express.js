@@ -9,8 +9,6 @@ var cors = require('cors');
 var path = require('path');
 var sassMiddleware = require('node-sass-middleware');
 
-var httpApp = express();
-
 module.exports = function(app, config) {
   var env = process.env.NODE_ENV || 'development';
   app.locals.ENV = env;
@@ -45,6 +43,14 @@ module.exports = function(app, config) {
   // controllers.forEach(function (controller) {
   //   require(controller)(app);
   // });
+  function requireHTTPS(req, res, next) {
+    if (!req.secure) {
+      return res.redirect('https://' + req.get('host') + req.url);
+    }
+    next();
+  }
+
+  app.use(requireHTTPS);
   require('../routes')(app);
 
   app.use(function (req, res, next) {
@@ -61,12 +67,6 @@ module.exports = function(app, config) {
         error: err,
         title: 'error'
       });
-    });
-  }
-
-  if (app.get('env') === 'production') {
-    httpApp.get("*", function (req, res, next) {
-      res.redirect("https://" + req.header.host + "/" + req.path);
     });
   }
 
