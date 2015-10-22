@@ -41,6 +41,13 @@ module.exports = function(app) {
   //     res.sendFile(path.resolve(app.get('appPath') + '/index.html/' + req.params.session_id))
   //   });
 
+  app.get("*", function (req, res, next) {
+    if (!req.secure) {
+      res.redirect("https://" + req.header.host + "/" + req.path);
+    };
+    next();
+  })
+
   app.route('/auth')
     .get(function(req,res) {
       var auth = require('./auth/auth');
