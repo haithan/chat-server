@@ -62,6 +62,12 @@ module.exports = function(app, config) {
     });
   }
 
+  if (app.get('env') === 'production') {
+    app.get("*", function (req, res, next) {
+      res.redirect("https://" + req.header.host + "/" + req.path);
+    });
+  }
+
   app.use(function (err, req, res, next) {
     res.status(err.status || 500);
       res.json({
