@@ -28,7 +28,6 @@ function onConnect(socket) {
   require('../api/user/user.socket').register(socket);
   require('../api/block/block.socket').register(socket);
   require('../api/notification/notification.socket').register(socket);
-  require('../api/default_room/default_room.socket').register(socket);
   require('../api/message/message.socket').register(socket);
   require('../api/gcm/gcm.socket').register(socket);
 }

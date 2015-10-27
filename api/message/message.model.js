@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var MessageSchema = new Schema({
-  session_id: String,
+  session_id: {type: String, index: true},
   user_id: Number,
   message: String,
   deleted: {type: Boolean, default: false},

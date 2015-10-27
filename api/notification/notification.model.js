@@ -4,8 +4,8 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var NotificationSchema = new Schema({
-  from_user_id: Number,
-  to_user_id: Number,
+  from_user_id: {type: Number, index: true},
+  to_user_id: {type: Number, index: true},
   noti_num: Number
 });
 

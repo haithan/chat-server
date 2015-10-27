@@ -15,7 +15,6 @@ module.exports = function(app) {
   app.use('/api/users', require('./api/user'));
   app.use('/api/blocks', require('./api/block'));
   app.use('/api/notifications', require('./api/notification'));
-  app.use('/api/default_rooms', require('./api/default_room'));
   app.use('/api/messages', require('./api/message'));
   app.use('/api/fb_infos', require('./api/fb_info'));
   app.use('/api/gcms', require('./api/gcm'));
