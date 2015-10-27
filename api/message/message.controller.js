@@ -13,7 +13,7 @@ var Message = require('./message.model');
 
 // Get messages belong to a room
 exports.show = function(req, res) {
-  if (req.params.id !== 'undefined') {
+  if (req.params.id === 'undefined') {
     Message.find({session_id: req.params.session_id, deleted: false}, function (err, messages) {
       if(err) { return handleError(res, err); }
       return res.status(200).json(messages);
@@ -25,6 +25,13 @@ exports.show = function(req, res) {
     }).sort({_id: -1}).limit(20);
   }
 };
+
+exports.showAll = function(req,res) {
+  Message.find({session_id: req.params.session_id, deleted: false}, function (err, messages) {
+    if(err) { return handleError(res, err); }
+    return res.status(200).json(messages);
+  });
+}
 
 // Creates a new message in the DB.
 exports.create = function(req, res) {

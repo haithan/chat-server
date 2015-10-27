@@ -7,6 +7,7 @@ var router = express.Router();
 
 // router.get('/', controller.index);
 router.get('/:session_id/:id', controller.show);
+router.get('/:session_id', controller.showAll);
 router.post('/', controller.create);
 // router.put('/:id', controller.update);
 // router.patch('/:id', controller.update);

@@ -8,6 +8,7 @@
     "angular-cookies": ">=1.2.*",
     "angular-emoji-filter-hd": "git://github.com/dbaq/angular-emoji-filter-hd.git#~0.0.6",
     "angular-perfect-scrollbar": "~0.0.4",
+    "angular-pull-to-refresh": "~0.3.0",
     "angular-resource": ">=1.2.*",
     "angular-sanitize": ">=1.2.*",
     "angular-socket-io": "~0.6.0",
