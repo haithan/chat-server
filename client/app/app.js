@@ -10,7 +10,6 @@ angular.module('chatApp', [
   'perfect_scrollbar',
   'dbaq.emoji',
   'angular-click-outside',
-  'mgcrea.pullToRefresh'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
