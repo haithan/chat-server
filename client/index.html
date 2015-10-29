@@ -60,6 +60,9 @@
       <script src="bower_components/lodash/dist/lodash.compat.js"></script>
       <script src="bower_components/underscore/underscore.js"></script>
       <script src="bower_components/angular-click-outside/clickoutside.directive.js"></script>
+      <script src="bower_components/spin.js/spin.js"></script>
+      <script src="bower_components/angular-spinner/angular-spinner.js"></script>
+      <script src="bower_components/angular-scroll-glue/src/scrollglue.js"></script>
 
       <!-- endbower -->
 
@@ -71,25 +74,15 @@
 
     <script src="app/app.js"></script>
       <!-- injector:js -->
-      <script src="app/authService/authService.service.js"></script>
-      <script src="app/blocksService/blocksService.service.js"></script>
-      <script src="app/chatDirectives/chatDirectives.directive.js"></script>
-      <script src="app/chatFilters/chatFilters.service.js"></script>
-      <script src="app/chatUtils/chatUtils.service.js"></script>
-      <script src="app/defaultRoomsService/defaultRoomsService.service.js"></script>
+      <script src="app/services/api.service.js"></script>
+      <script src="app/services/auth.service.js"></script>
+      <script src="app/services/utils.service.js"></script>
+      <script src="app/directives/chatDirectives.directive.js"></script>
       <script src="app/main/main.controller.js"></script>
       <script src="app/main/main.js"></script>
-      <script src="app/matchsService/matchsService.service.js"></script>
-      <script src="app/messagesService/messagesService.service.js"></script>
-      <script src="app/notificationsService/notificationsService.service.js"></script>
-      <script src="app/userService/userService.service.js"></script>
-      <script src="app/gcmService/gcmsService.service.js"></script>
-      <script src="components/auth/auth.service.js"></script>
-      <script src="components/auth/user.service.js"></script>
-      <script src="components/modal/modal.service.js"></script>
-      <script src="components/mongoose-error/mongoose-error.directive.js"></script>
-      <script src="components/navbar/navbar.controller.js"></script>
-      <script src="components/socket/socket.service.js"></script>
+      <script src="components/sidebar/sidebar.controller.js"></script>
+      <script src="app/login/login.controller.js"></script>
+      <script src="app/login/login.js"></script>
       <!-- endinjector -->
     <!-- endbuild -->
 </body>

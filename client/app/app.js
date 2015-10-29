@@ -10,10 +10,12 @@ angular.module('chatApp', [
   'perfect_scrollbar',
   'dbaq.emoji',
   'angular-click-outside',
+  'angularSpinner',
+  'luegg.directives'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
-      .otherwise('/');
+      .otherwise('/login');
 
     $locationProvider.html5Mode(true);
     //Enable cross domain calls
@@ -24,8 +26,8 @@ angular.module('chatApp', [
   })
 
   .factory('socket', function (socketFactory) {
-    // var myIoSocket = io.connect('http://chat.lvh.me:8123');
-    var myIoSocket = io.connect('https://chat.ymeet.me');
+    var myIoSocket = io.connect('http://chat.lvh.me:8123');
+    // var myIoSocket = io.connect('https://chat.ymeet.me');
 
     var mySocket = socketFactory({
       ioSocket: myIoSocket

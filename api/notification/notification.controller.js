@@ -42,18 +42,6 @@ exports.update = function(req, res) {
   });
 };
 
-// Deletes a notification from the DB.
-// exports.destroy = function(req, res) {
-//   Notification.findById(req.params.id, function (err, notification) {
-//     if(err) { return handleError(res, err); }
-//     if(!notification) { return res.status(404).send('Not Found'); }
-//     notification.remove(function(err) {
-//       if(err) { return handleError(res, err); }
-//       return res.status(204).send('No Content');
-//     });
-//   });
-// };
-
 function handleError(res, err) {
   return res.status(500).send(err);
 }
