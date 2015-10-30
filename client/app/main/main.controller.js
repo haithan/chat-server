@@ -1,9 +1,8 @@
 'use strict';
 
 angular.module('chatApp')
-  .controller('MainCtrl', function ($scope, $http, socket, $location, $rootScope,
-                                    $cookieStore, chatUtils, chatFilters, $stateParams,
-                                    Notification, Block, Message, $window, User, Gcm, $timeout) {
+  .controller('MainCtrl', function ($scope, socket, $rootScope, chatUtils, chatFilters, $stateParams,
+                                    Notification, Message, User, Gcm) {
     if($stateParams.roomId == '' || $stateParams.userId == '') {
       return;
     }

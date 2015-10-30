@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
+
   .factory('Block', function ($http) {
     // Service logic
     // ...

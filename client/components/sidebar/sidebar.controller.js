@@ -2,12 +2,8 @@
 
 angular.module('chatApp')
   .controller('SideBarCtrl', function ($scope, User, Match, $rootScope, $location,
-                                       $state, Block, Notification, Message, $stateParams,
+                                       Block, Notification, Message, $stateParams,
                                        $timeout, socket, chatUtils) {
-    if (typeof $rootScope.userId === 'undefined') {
-      $state.go('login');
-    }
-
     Match.getMatchs($rootScope.userId).success(function(datas) {
       initMatchUsers(datas);
     });
