@@ -9,10 +9,9 @@ angular.module('chatApp')
 
     var userId = $rootScope.userId;
     var targetUserId = $stateParams.userId;
-    var targetUserName = '';
+    var targetUserName = $rootScope.targetUserName;
     var sessionId = $stateParams.roomId;
-    var targetAvatarUrl = '';
-    var messageTo = '';
+    var targetAvatarUrl = $rootScope.targetAvatarUrl;
     var targetUserGgIds = '';
     $scope.emojiPopup = false;
     $scope.emojis = ['bowtie', 'smile', 'laughing', 'blush', 'smiley', 'relaxed',
@@ -26,36 +25,82 @@ angular.module('chatApp')
             'fearful', 'cold_sweat', 'persevere', 'cry', 'sob', 'joy', 'astonished',
             'scream', 'neckbeard', 'tired_face', 'angry', 'rage', 'triumph', 'sleepy'];
 
-    // init some target variables
-    User.getUser(targetUserId).success(function(data) {
-      targetUserName = data.user_name;
-      targetAvatarUrl = data.avatar_url;
-      socket.emit('addUser', {room: sessionId, userId: userId});
-    });
+    // init when join room
+    socket.emit('addUser', {room: sessionId, userId: userId});
 
     Gcm.getGcmIds(targetUserId).success(function(data) {
       targetUserGgIds = data.gcm_ids;
     })
 
-    // delete all notification of this room when joined
     Notification.updateNotificationNum(targetUserId, userId, 0);
+    // end of init
 
-    // get all old messages after join room
-    socket.on('getMessage', function() {
+    var prepareChat = function(data) {
+      var chat = {};
+
+      chat._id = data._id;
+      chat.float_class = 'pull-right';
+      chat.message = data.message;
+
+      var url = chatUtils.getUrlFromText(data.message);
+      if (url) {
+        chatUtils.isImage(url).then(function(result) {
+          if (result === true) {
+            chat.image_url = url;
+          }
+        });
+      }
+
+      if ( data.user_id != userId ) {
+        chat.float_class = '';
+        chat.username = targetUserName;
+        chat.avatar_url = targetAvatarUrl;
+      }
+
+      return chat;
+    }
+
+    // append chat to view
+    var appendChat = function(data, isLastMsg) {
+      if (!data.message) { return; }
+
+      isLastMsg = typeof isLastMsg !== 'undefined' ? isLastMsg : true;
+
+      var chat = prepareChat(data);
+
+      if (isLastMsg) {
+        $scope.chats.push(chat);
+      } else {
+        $scope.chats.unshift(chat);
+      }
+    };
+
+    var updateNotification = function(data) {
+      if (data && data.from_user_id && data.to_user_id && data.noti_num && data.to_user_id == userId) {
+        var $userRow = $('#' + data.from_user_id);
+        // if user is currently in this room then return
+        if ( $userRow.hasClass('active') ) {
+          Notification.updateNotificationNum(targetUserId, userId, 0);
+          return;
+        }
+      }
+    };
+
+    var getMessage = function() {
       $scope.chats = [];
+      var id = typeof $scope.chats[0] !== 'undefined' ? $scope.chats[0]._id : 'undefined';
 
-      Message.getMessagesFromRoom(sessionId).success(function(data) {
+      Message.getMessagesFromRoom(sessionId, id).success(function(data) {
         if (data === undefined || data.length == 0) {
           return;
         }
 
         data.forEach(function(d) {
-          appendChat(d);
+          appendChat(d, false);
         });
       });
-    });
+    }
 
-    // send chat function is fired when hit Enter or click sendChat button
     $scope.sendChat = function() {
       if($scope.chatMessage === '') {
         return;
@@ -79,49 +124,6 @@ angular.module('chatApp')
       }
     };
 
-    socket.on('updateChat', function(data) {
-      appendChat(data);
-    });
-
-    // append chat to view
-    var appendChat = function(data) {
-      var chat = {};
-      chat.float_class = 'pull-right';
-      var $chatContent = $('#chatContent');
-      if (data.message) {
-        chat.message = data.message;
-
-        // get image link from text message
-        var url = chatUtils.getUrlFromText(data.message);
-        if (url) {
-          chatUtils.isImage(url).then(function(result) {
-            if (result === true) {
-              chat.image_url = url;
-            }
-          });
-        }
-      }
-
-      if ( data.user_id != userId ) {
-        chat.float_class = '';
-        chat.username = targetUserName;
-        chat.avatar_url = targetAvatarUrl;
-      }
-
-      $scope.chats.push(chat);
-    };
-
-    socket.on('notification:save', function(data) {
-      if (data && data.from_user_id && data.to_user_id && data.noti_num && data.to_user_id == userId) {
-        var $userRow = $('#' + data.from_user_id);
-        // if user is currently in this room then return
-        if ( $userRow.hasClass('active') ) {
-          Notification.updateNotificationNum(targetUserId, userId, 0);
-          return;
-        }
-      }
-    });
-
     $scope.showEmojiPopup = function($event) {
       $scope.emojiPopup = $scope.emojiPopup === false ? true : false
     };
@@ -130,5 +132,24 @@ angular.module('chatApp')
       var message = $scope.chatMessage === undefined ? '' : $scope.chatMessage;
       $scope.chatMessage = message + ":" + icon + ":";
     };
+
+    $scope.loadMore = function() {
+      var id = typeof $scope.chats[0] !== 'undefined' ? $scope.chats[0]._id : 'undefined';
+      Message.getMessagesFromRoom(sessionId, id).success(function(datas) {
+        if (datas === undefined || datas.length == 0) {
+          return;
+        }
+
+        datas.forEach(function(data) {
+          appendChat(data, false);
+        });
+      })
+    }
+
+    socket.on('notification:save', updateNotification);
+
+    socket.on('getMessage', getMessage);
+
+    socket.on('updateChat', appendChat);
 
   });

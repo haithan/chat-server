@@ -10,12 +10,12 @@
         </a>
       </div>
     </div>
-    <perfect-scrollbar class="scroller row" wheel-propagation="true" wheel-speed="1" min-scrollbar-length="20" data-content id="chatContent" scroll-glue>
+    <perfect-scrollbar class="scroller row" wheel-propagation="true" wheel-speed="1" min-scrollbar-length="20" data-content id="chatContent" scroll-glue scroll-to-top>
       <div ng-repeat-start="chat in chats" ng-class="chat.float_class" class="message-wrapper" id="chat-{{::$index}}" >
         <img ng-show="chat.avatar_url" fallback-src="/assets/images/default_user.jpg" ng-src={{chat.avatar_url}} alt={{chat.username}}><span class="message-border" ng-class="chat.float_class" ng-bind-html="chat.message | emoji"></span>
       </div>
       <div class="clearfix"></div>
-      <img ng-show="chat.image_url" ng-src={{chat.image_url}} alt="image" class="message-image" ng-class="chat.float_class">
+      <img ng-if="chat.image_url" ng-src={{chat.image_url}} alt="image" class="message-image" ng-class="chat.float_class">
       <div ng-repeat-end class="clearfix"></div>
     </perfect-scrollbar>
     <div class="row chat-input">

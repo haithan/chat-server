@@ -37,7 +37,7 @@ module.exports = function(app, config) {
   // });
   app.use(function(req, res, next) {
     var md = new mobileDetect(req.headers['user-agent']);
-    if (md.mobile() == null) {
+    if (md.mobile() != null) {
       res.sendFile(path.resolve(app.get('appPath') + '/mobile.html'));
     } else {
       next();

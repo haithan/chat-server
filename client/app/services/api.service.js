@@ -50,8 +50,8 @@ angular.module('chatApp')
 
     // Public API here
     return {
-      getMessagesFromRoom: function (roomId) {
-        return $http.get('/api/messages/' + roomId);
+      getMessagesFromRoom: function (roomId, messageId) {
+        return $http.get('/api/messages/' + roomId + "/" + messageId);
       },
 
       createMessage: function(roomId, userId, message) {
