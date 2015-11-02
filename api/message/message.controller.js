@@ -9,12 +9,12 @@ exports.show = function(req, res) {
     Message.find({session_id: req.params.session_id, deleted: false}, function (err, messages) {
       if(err) { return handleError(res, err); }
       return res.status(200).json(messages);
-    }).sort({_id: -1}).limit(20);
+    }).sort({_id: -1}).limit(25);
   } else {
     Message.find({session_id: req.params.session_id, deleted: false, _id: {$lt: req.params.id}}, function (err, messages) {
       if(err) { return handleError(res, err); }
       return res.status(200).json(messages);
-    }).sort({_id: -1}).limit(20);
+    }).sort({_id: -1}).limit(25);
   }
 };
 
