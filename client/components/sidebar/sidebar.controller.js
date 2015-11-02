@@ -3,7 +3,7 @@
 angular.module('chatApp')
   .controller('SideBarCtrl', function ($scope, User, Match, $rootScope, $location,
                                        Block, Notification, Message, $stateParams,
-                                       $timeout, socket, chatUtils) {
+                                       $timeout, socket, chatUtils, $state) {
     // init user list
     Match.getMatchs($rootScope.userId).success(function(datas) {
       async.waterfall([
@@ -34,13 +34,14 @@ angular.module('chatApp')
     var initUsers = function(users, cb) {
       async.each(users, initUser, function(err) {
         $scope.users = users;
+        $rootScope.users = users;
         cb(null, users);
       });
 
     };
 
     var setCurrentChatRoom = function(users, cb) {
-      if($stateParams.roomId == '' || $stateParams.userId == '') {
+      if($stateParams.roomId == '' || $stateParams.userId == '' || chatUtils.roomPermission() == false) {
         // auto join first chat room if no chat room is set
         $location.path('/t/' + $scope.users[0].session_id + '/' + $scope.users[0].id);
       } else {
@@ -122,9 +123,9 @@ angular.module('chatApp')
     };
 
     $scope.go = function(user) {
-      $location.path('/t/' + user.session_id + '/' + user.id);
       $rootScope.targetUserName = user.user_name;
       $rootScope.targetAvatarUrl = user.avatar_url;
+      $location.path('/t/' + user.session_id + '/' + user.id);
     };
 
     socket.on('notification:save', updateNotification);

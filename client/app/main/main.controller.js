@@ -3,7 +3,7 @@
 angular.module('chatApp')
   .controller('MainCtrl', function ($scope, socket, $rootScope, chatUtils, chatFilters, $stateParams,
                                     Notification, Message, User, Gcm) {
-    if($stateParams.roomId == '' || $stateParams.userId == '') {
+    if($stateParams.roomId == '' || $stateParams.userId == '' || chatUtils.roomPermission() == false) {
       return;
     }
 

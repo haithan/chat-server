@@ -15,7 +15,7 @@ angular.module('chatApp', [
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
-      .otherwise('/login');
+      .otherwise('/t//');
 
 
     $locationProvider.html5Mode(true);

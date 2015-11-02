@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chatApp')
-  .factory('chatUtils', function ($q) {
+  .factory('chatUtils', function ($stateParams, $rootScope, $q) {
     // Service logic
     // ...
 
@@ -31,6 +31,15 @@ angular.module('chatApp')
 
       findIndexByUserId: function(id, users) {
         return _.findIndex(users, function(user) {return user.id == id});
+      },
+
+      roomPermission: function() {
+        var user = _.findWhere($rootScope.users, {id: parseInt($stateParams.userId), session_id: $stateParams.roomId});
+        if (user) {
+          return true;
+        } else {
+          return false;
+        }
       }
     };
   })
