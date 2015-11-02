@@ -8,6 +8,7 @@ var compress = require('compression');
 var cors = require('cors');
 var path = require('path');
 var sassMiddleware = require('node-sass-middleware');
+var mobileDetect = require('mobile-detect');
 
 module.exports = function(app, config) {
   var env = process.env.NODE_ENV || 'development';
@@ -28,21 +29,21 @@ module.exports = function(app, config) {
 
   app.use(cors());
   app.set('appPath', path.join(config.root, 'client'));
-
-  app.use(
-    sassMiddleware({
-      src: '/',
-      dest: '/',
-      debug: true
-    })
-  );
-
   app.use(express.static(path.join(config.root, 'client')));
 
   // var controllers = glob.sync(config.root + '/app/controllers/*.js');
   // controllers.forEach(function (controller) {
   //   require(controller)(app);
   // });
+  app.use(function(req, res, next) {
+    var md = new mobileDetect(req.headers['user-agent']);
+    if (md.mobile() == null) {
+      res.sendFile(path.resolve(app.get('appPath') + '/mobile.html'));
+    } else {
+      next();
+    }
+  });
+
   require('../routes')(app);
 
   app.use(function (req, res, next) {
