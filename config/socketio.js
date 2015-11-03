@@ -64,7 +64,6 @@ module.exports = function (socketio) {
     });
 
     socket.on('addUser', function(data) {
-      console.log('aasdasd');
       // leave previous room
       if (socket.room) {
         socket.leave(socket.room);
