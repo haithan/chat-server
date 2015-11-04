@@ -35,14 +35,14 @@ module.exports = function(app, config) {
   // controllers.forEach(function (controller) {
   //   require(controller)(app);
   // });
-  app.use(function(req, res, next) {
-    var md = new mobileDetect(req.headers['user-agent']);
-    if (md.mobile() != null) {
-      res.sendFile(path.resolve(app.get('appPath') + '/mobile.html'));
-    } else {
-      next();
-    }
-  });
+  // app.use(function(req, res, next) {
+  //   var md = new mobileDetect(req.headers['user-agent']);
+  //   if (md.mobile() != null) {
+  //     res.sendFile(path.resolve(app.get('appPath') + '/mobile.html'));
+  //   } else {
+  //     next();
+  //   }
+  // });
 
   require('../routes')(app);
 
