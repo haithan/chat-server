@@ -7,7 +7,6 @@ var compress = require('compression');
 
 var cors = require('cors');
 var path = require('path');
-var sassMiddleware = require('node-sass-middleware');
 var mobileDetect = require('mobile-detect');
 
 module.exports = function(app, config) {

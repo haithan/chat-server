@@ -28,7 +28,10 @@ exports.update = function(req, res) {
   if (req.params.id && req.body.fb_uid) {
     FbInfo.findOne({user_id: req.params.id}, function (err, fb_info) {
       if (err) { return handleError(res, err); }
-      if(!fb_info) { return res.status(404).send('Not Found'); }
+      if(!fb_info) {
+        FbInfo.create({user_id: req.params.id, fb_uid: req.body.fb_uid});
+        return res.sendStatus(201);
+      }
       var updated = _.merge(fb_info, req.body);
       updated.save(function (err) {
         if (err) { return handleError(res, err); }

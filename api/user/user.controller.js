@@ -45,7 +45,10 @@ exports.update = function(req, res) {
   if (req.params.id && req.body.name && req.body.avatar_url) {
     User.findOne({user_id: req.params.id}, function (err, user) {
       if (err) { return handleError(res, err); }
-      if(!user) { return res.status(404).send('Not Found'); }
+      if(!user) {
+        User.create({user_id: req.params.id, name: req.body.name, avatar_url: req.body.avatar_url});
+        return res.sendStatus(201);
+      }
       var updated = _.merge(user, req.body);
       updated.save(function (err) {
         if (err) { return handleError(res, err); }

@@ -7,16 +7,32 @@
 // var errors = require('./components/errors');
 var config = require('./config/config');
 var path = require('path');
+var passport = require('passport');
+var Strategy = require('passport-http-bearer').Strategy;
+var auth = require('./auth/auth');
 
 module.exports = function(app) {
 
-  // Insert routes below
-  app.use('/api/matchs', require('./api/match'));
+  passport.use(new Strategy(
+    function(token, cb) {
+      auth.findUserByJWT(token, cb);
+    }
+  ));
+
   app.use('/api/users', require('./api/user'));
+  app.use('/api/matchs', require('./api/match'));
+  app.use('/api/fb_infos', require('./api/fb_info'));
+
+  app.use('/api/*',
+          passport.authenticate('bearer', { session: false }),
+          function(req, res, next) {
+            next();
+          });
+
+  // Insert routes below
   app.use('/api/blocks', require('./api/block'));
   app.use('/api/notifications', require('./api/notification'));
   app.use('/api/messages', require('./api/message'));
-  app.use('/api/fb_infos', require('./api/fb_info'));
   app.use('/api/gcms', require('./api/gcm'));
 
   // app.get('/', function(req, res) {
@@ -42,9 +58,10 @@ module.exports = function(app) {
 
   app.route('/auth')
     .get(function(req,res) {
-      var auth = require('./auth/auth');
-      auth.authenticateWeb(req.cookies, function(id) {
-        res.send({user_id: id});
+      auth.authenticateWeb(req.cookies, function(err, user) {
+        if (err) { return res.status(500).send(err); }
+        if (typeof user === 'undefined' || !user) { return res.sendStatus(403); }
+        return res.send({user_id: user.user_id, auth_token: req.cookies.x_user});
       });
     });
 

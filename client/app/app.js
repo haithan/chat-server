@@ -27,8 +27,8 @@ angular.module('chatApp', [
   })
 
   .factory('socket', function (socketFactory) {
-    // var myIoSocket = io.connect('http://chat.lvh.me:8123');
-    var myIoSocket = io.connect('https://chat.ymeet.me');
+    var myIoSocket = io.connect('http://chat.lvh.me:8123');
+    // var myIoSocket = io.connect('https://chat.ymeet.me');
 
     var mySocket = socketFactory({
       ioSocket: myIoSocket
@@ -37,7 +37,7 @@ angular.module('chatApp', [
     return mySocket;
   })
 
-  .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
+  .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location, $window) {
 
     return {
       // Add authorization token to headers
@@ -52,7 +52,8 @@ angular.module('chatApp', [
       // Intercept 401s and redirect you to login
       responseError: function(response) {
         if(response.status === 401) {
-          $location.path('/login');
+          alert('Bạn chưa đăng ký dịch vụ ymeet.me. Vui lòng đăng ký trước khi sử dụng dịch vụ chat. Xin cám ơn.');
+          return $window.location.href = 'http://ymeet.me';
           // remove any stale tokens
           $cookieStore.remove('auth_token');
           return $q.reject(response);

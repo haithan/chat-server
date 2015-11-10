@@ -13,7 +13,8 @@ var config = {
     secret_key: 'a0ef38ee4c364d973a023c1a8a7de51f10d6990ee7412166911c8ddfa5d9',
     main_web: 'lvh.me:3000',
     ggSenderId: 'AIzaSyBmFcDkIMWiNTU8cClehEAR8s5Fr1cSlV4',
-    env: 'development'
+    env: 'development',
+    rails_ip: '127.0.0.1'
   },
 
   test: {
@@ -39,7 +40,8 @@ var config = {
     secret_key: 'a0ef38ee4c364d973a023c1a8a7de51f10d6990ee7412166911c8ddfa5d9',
     main_web: 'https://ymeet.me',
     ggSenderId: 'AIzaSyBmFcDkIMWiNTU8cClehEAR8s5Fr1cSlV4',
-    env: 'production'
+    env: 'production',
+    rails_ip: '103.56.157.70'
   }
 
 };
