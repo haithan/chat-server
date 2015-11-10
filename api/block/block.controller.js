@@ -13,6 +13,7 @@ var Block = require('./block.model');
 
 // Get a single block
 exports.show = function(req, res) {
+  if (req.user.user_id != req.params.source_id) {return res.sendStatus(404);}
   Block.findOne({source_id: req.params.source_id, target_id: req.params.target_id}, function (err, block) {
     if(err) { return handleError(res, err); }
     if(!block) { return res.status(404).send('Not Found'); }
@@ -22,6 +23,7 @@ exports.show = function(req, res) {
 
 // Creates a new block in the DB.
 exports.create = function(req, res) {
+  if (req.user.user_id != req.body.source_id) {return res.sendStatus(404);}
   Block.create(req.body, function(err, block) {
     if(err) { return handleError(res, err); }
     return res.status(201).json(block);
@@ -30,6 +32,7 @@ exports.create = function(req, res) {
 
 // Updates an existing block in the DB.
 exports.update = function(req, res) {
+  if (req.user.user_id != req.params.source_id) {return res.sendStatus(404);}
   if(req.body._id) { delete req.body._id; }
   Block.findOne({source_id: req.params.source_id, target_id: req.params.target_id}, function (err, block) {
     if (err) { return handleError(res, err); }

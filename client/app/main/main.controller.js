@@ -4,9 +4,9 @@ angular.module('chatApp')
   .controller('MainCtrl', function ($scope, socket, $rootScope, chatUtils, chatFilters, $stateParams,
                                     Notification, Message, User, Gcm) {
     if($stateParams.roomId == '' || $stateParams.userId == '' || chatUtils.roomPermission() == false) {
+      console.log('aaaaa');
       return;
     }
-
     var userId = $rootScope.userId;
     var targetUserId = $stateParams.userId;
     var targetUserName = $rootScope.targetUserName;

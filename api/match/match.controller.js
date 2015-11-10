@@ -5,6 +5,7 @@ var Match = require('./match.model');
 
 // Get list of matchs by user_id
 exports.show = function(req, res) {
+  if (req.user.user_id != req.params.id) {return res.sendStatus(404);}
   Match.find({source_id: req.params.id}, function (err, matchs) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(matchs);

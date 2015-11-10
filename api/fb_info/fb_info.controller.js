@@ -10,8 +10,8 @@ exports.index = function(req, res) {
   });
 };
 
-// Get list of matchs by user_id
 exports.show = function(req, res) {
+  if (req.user.user_id != req.params.id) {return res.sendStatus(404);}
   if (req.params.id) {
     FbInfo.findOne({fb_uid: req.params.id}, function (err, fb_info) {
       if(err) { return handleError(res, err); }

@@ -15,6 +15,7 @@ exports.show = function(req, res) {
 // Updates an existing user in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
+  if (req.user.user_id != req.params.id) {return res.sendStatus(404);}
   Gcm.findOne({user_id: req.params.id}, function (err, gcm) {
     if (err) { return handleError(res, err); }
 
