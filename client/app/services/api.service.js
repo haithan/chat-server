@@ -38,8 +38,8 @@ angular.module('chatApp')
         return $http.get('/api/matchs/' + userId);
       },
 
-      checkRoomPermission: function (roomId, userId) {
-        return $http.get('/api/matchs/' + roomId + '/' + userId);
+      checkRoomPermission: function (sourceId, targetId, sessionId) {
+        return $http.get('/api/matchs/' + sourceId + '/' + targetId + '/' + sessionId);
       }
     };
   })

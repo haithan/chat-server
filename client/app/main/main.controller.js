@@ -2,9 +2,8 @@
 
 angular.module('chatApp')
   .controller('MainCtrl', function ($scope, socket, $rootScope, chatUtils, chatFilters, $stateParams,
-                                    Notification, Message, User, Gcm) {
-    if($stateParams.roomId == '' || $stateParams.userId == '' || chatUtils.roomPermission() == false) {
-      console.log('aaaaa');
+                                    Notification, Message, User, Gcm, Match, $timeout) {
+    if($stateParams.roomId == '' || $stateParams.userId == '') {
       return;
     }
     var userId = $rootScope.userId;
@@ -26,7 +25,17 @@ angular.module('chatApp')
             'scream', 'neckbeard', 'tired_face', 'angry', 'rage', 'triumph', 'sleepy'];
 
     // init when join room
-    socket.emit('addUser', {room: sessionId, userId: userId});
+    Match.checkRoomPermission(userId, targetUserId, sessionId)
+      .then(function(res) {
+        if (res.status === 200) {
+          socket.emit('addUser', {room: sessionId, userId: userId});
+          $timeout(function(){
+            $('#'+ $stateParams.userId).addClass('active');
+          },200);
+        } else {
+          return;
+        }
+      })
 
     Gcm.getGcmIds(targetUserId).success(function(data) {
       targetUserGgIds = data.gcm_ids;

@@ -27,6 +27,15 @@ exports.create = function(req, res) {
   }
 };
 
+exports.checkPermission = function(req, res) {
+  if (req.user.user_id != req.params.source_id) {return res.sendStatus(404);}
+  Match.findOne({source_id: req.params.source_id, target_id: req.params.target_id, session_id: req.params.session_id}, function(err, match) {
+    if (err) {return res.sendStatus(403);}
+    if (!match) {return res.sendStatus(403);}
+    return res.sendStatus(200);
+  });
+}
+
 function handleError(res, err) {
   return res.status(500).send(err);
 }

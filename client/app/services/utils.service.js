@@ -33,14 +33,6 @@ angular.module('chatApp')
         return _.findIndex(users, function(user) {return user.id == id});
       },
 
-      roomPermission: function() {
-        var user = _.findWhere($rootScope.users, {id: parseInt($stateParams.userId), session_id: $stateParams.roomId});
-        if (user) {
-          return true;
-        } else {
-          return false;
-        }
-      }
     };
   })
 

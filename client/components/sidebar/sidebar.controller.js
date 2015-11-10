@@ -41,13 +41,9 @@ angular.module('chatApp')
     };
 
     var setCurrentChatRoom = function(users, cb) {
-      if($stateParams.roomId == '' || $stateParams.userId == '' || chatUtils.roomPermission() == false) {
+      if($stateParams.roomId == '' || $stateParams.userId == '') {
         // auto join first chat room if no chat room is set
         $location.path('/t/' + $scope.users[0].session_id + '/' + $scope.users[0].id);
-      } else {
-        $timeout(function() {
-          $('#'+ $stateParams.userId).addClass('active');
-        }, 100);
       }
       cb(null, users);
     };
