@@ -65,6 +65,16 @@ module.exports = function(app) {
       });
     });
 
+  app.route('/mobile-auth/:uid')
+    .get(function(req, res) {
+      auth.authMobile(req.params.uid, function(err, fbInfo) {
+        if ( err ) { return res.status(500).send(err); }
+        if ( typeof fbInfo === 'undefined' || !fbInfo ) { return res.sendStatus(403); }
+        var authToken = auth.createAuthToken(fbInfo.user_id);
+        return res.send({user_id: fbInfo.user_id, auth_token: authToken});
+      })
+    })
+
   // All other routes should redirect to the index.html
   app.route('/*')
     .get(function(req, res) {
