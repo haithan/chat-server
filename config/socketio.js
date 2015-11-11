@@ -84,7 +84,7 @@ module.exports = function (socketio) {
       var notyMobile = function() {
         var message = new nodeGcm.Message();
         message.addNotification('title', 'Bạn có tin nhắn mới');
-        message.addNotification('icon', 'ic_launcher');
+        message.addNotification('icon', 'ic_notification');
         message.addNotification('body', data.message);
 
         var regIds = data.targetUserGgIds;
