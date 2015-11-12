@@ -36,7 +36,8 @@ gulp.task('build', function() {
           './client/bower_components/spin.js/spin.js',
           './client/bower_components/angular-spinner/angular-spinner.js',
           './client/bower_components/angular-scroll-glue/src/scrollglue.js',
-          './client/bower_components/crypto-js/crypto-js.js',])
+          './client/bower_components/crypto-js/crypto-js.js',
+          './client/bower_components/mobile-detect/mobile-detect.js'])
     .pipe(concat('bundle.js'))
     .pipe(uglify({mangle: false}))
     .pipe(gulp.dest('./client/'));

@@ -7,7 +7,6 @@ var compress = require('compression');
 
 var cors = require('cors');
 var path = require('path');
-var mobileDetect = require('mobile-detect');
 
 module.exports = function(app, config) {
   var env = process.env.NODE_ENV || 'development';
