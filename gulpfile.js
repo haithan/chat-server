@@ -8,18 +8,16 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     log = util.log;
 
-gulp.task('sass', function () {
+gulp.task('build', function() {
   gulp.src('./client/app/app.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(minifycss())
     .pipe(gulp.dest('./client/app/'));
-});
 
-gulp.task('compress', function() {
-  return gulp.src(['./client/app/*.js', './client/app/**/*.js', './client/components/*.js', './client/components/**/*.js'])
-          .pipe(concat('all.js'))
-          .pipe(uglify({mangle: false}))
-          .pipe(gulp.dest('./client/'));
+  gulp.src(['./client/app/*.js', './client/app/**/*.js', './client/components/*.js', './client/components/**/*.js'])
+    .pipe(concat('all.js'))
+    .pipe(uglify({mangle: false}))
+    .pipe(gulp.dest('./client/'));
 });
 
 gulp.task('sass:watch', function () {
