@@ -164,4 +164,11 @@ angular.module('chatApp')
 
     socket.on('updateChat', appendChat);
 
+    $scope.$on('$destroy', function() {
+      socket.removeListener('getMessage', getMessage);
+      socket.removeListener('updateChat', appendChat);
+      socket.removeListener('notification:save', updateNotification);
+      socket.emit('user:leaveRoom');
+    });
+
   });
