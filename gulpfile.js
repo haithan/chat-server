@@ -9,6 +9,7 @@ var gulp = require('gulp'),
 gulp.task('sass', function () {
   gulp.src('./client/app/app.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(minifycss())
     .pipe(gulp.dest('./client/app/'));
 });
 

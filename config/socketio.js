@@ -10,6 +10,7 @@ var config = require('./config');
 var Notification = require('../api/notification/notification.model');
 var Block = require('../api/block/block.model');
 var Message = require('../api/message/message.model');
+var Crypto = require('../crypto/crypto');
 
 // When the user disconnects.. perform this
 function onDisconnect(socket) {
@@ -81,16 +82,18 @@ module.exports = function (socketio) {
     })
 
     socket.on('sendChat', function(data) {
+      var message = Crypto.decrypt(data.message);
+
       var notyMobile = function() {
-        var message = new nodeGcm.Message();
-        message.addNotification('title', 'Bạn có tin nhắn mới');
-        message.addNotification('icon', 'ic_notification');
-        message.addNotification('body', data.message);
+        var GcmMessage = new nodeGcm.Message();
+        GcmMessage.addNotification('title', 'Bạn có tin nhắn mới');
+        GcmMessage.addNotification('icon', 'ic_notification');
+        GcmMessage.addNotification('body', message);
 
         var regIds = data.targetUserGgIds;
         var sender = new nodeGcm.Sender(config.ggSenderId);
 
-        sender.send(message, regIds, function(err, result) {
+        sender.send(GcmMessage, regIds, function(err, result) {
           if(err) {
             console.error(err);
           } else {
@@ -115,7 +118,7 @@ module.exports = function (socketio) {
         } else {
           socketio.to(socket.room).emit('updateChat', {message: data.message, user_id: socket.userId});
 
-          Message.create({message: data.message, user_id: socket.userId, session_id: socket.room});
+          Message.create({message: message, user_id: socket.userId, session_id: socket.room});
 
           // emit notify chat to target user by target user's default room id
           if (data.targetUserGgIds !== '') {

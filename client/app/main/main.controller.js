@@ -2,7 +2,7 @@
 
 angular.module('chatApp')
   .controller('MainCtrl', function ($scope, socket, $rootScope, chatUtils, chatFilters, $stateParams,
-                                    Notification, Message, User, Gcm, Match, $timeout) {
+                                    Notification, Message, User, Gcm, Match, $timeout, Crypto) {
     if($stateParams.roomId == '' || $stateParams.userId == '') {
       return;
     }
@@ -31,7 +31,7 @@ angular.module('chatApp')
           socket.emit('addUser', {room: sessionId, userId: userId});
           $timeout(function(){
             $('#'+ $stateParams.userId).addClass('active');
-          },200);
+          },500);
         } else {
           return;
         }
@@ -75,6 +75,8 @@ angular.module('chatApp')
 
       isLastMsg = typeof isLastMsg !== 'undefined' ? isLastMsg : true;
 
+      // decrypt message in case it is the message broadcast from socket
+      if (isLastMsg) { data.message = Crypto.decrypt(data.message); }
       var chat = prepareChat(data);
 
       if (isLastMsg) {
@@ -117,6 +119,7 @@ angular.module('chatApp')
 
       // filter bad words
       var message = chatFilters.filterBadWords($scope.chatMessage);
+      message = Crypto.encrypt(message);
       // erase chat message when sent
       $scope.chatMessage = '';
 

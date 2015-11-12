@@ -31,7 +31,7 @@ angular.module('chatApp')
 
       findIndexByUserId: function(id, users) {
         return _.findIndex(users, function(user) {return user.id == id});
-      },
+      }
 
     };
   })
@@ -46,6 +46,25 @@ angular.module('chatApp')
     return {
       filterBadWords: function (str) {
         return str.replace(rgx, "***");
+      }
+    };
+  })
+
+  .factory('Crypto', function () {
+    var pass = 'mmj@#172014';
+
+    return {
+      encrypt: function(text) {
+        var enc = CryptoJS.AES.encrypt(text, pass).toString();
+
+        return enc;
+      },
+
+      decrypt: function(text) {
+        var dec = CryptoJS.AES.decrypt(text, pass);
+        dec = dec.toString(CryptoJS.enc.Utf8);
+
+        return dec;
       }
     };
   });
