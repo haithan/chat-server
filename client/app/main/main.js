@@ -8,4 +8,4 @@ angular.module('chatApp')
         templateUrl: 'app/main/main.html',
         controller: 'MainCtrl'
       });
-  })
+  });

@@ -45,4 +45,4 @@ angular.module('chatApp')
         })
       }
     };
-  }])
+  }]);
