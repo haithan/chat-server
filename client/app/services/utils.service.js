@@ -50,6 +50,20 @@ angular.module('chatApp')
     };
   })
 
+  .factory('Mobile', ['$window', function ($window) {
+    var md = new MobileDetect($window.navigator.userAgent);
+
+    return {
+      detect: function() {
+        if (md.mobile() != null) {
+          return true;
+        }
+
+        return false;
+      }
+    };
+  }])
+
   .factory('Crypto', function () {
     var pass = 'mmj@#172014';
 

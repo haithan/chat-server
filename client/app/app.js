@@ -65,8 +65,12 @@ angular.module('chatApp', [
     };
   })
 
-  .run(function (Auth, $rootScope) {
+  .run(function (Auth, $rootScope, Mobile, $location) {
     $rootScope.$on('$stateChangeStart', function (event, next) {
-      Auth.auth();
+      if (Mobile.detect()) {
+        $location.path('/mobile');
+      } else {
+        Auth.auth();
+      }
     });
   });
