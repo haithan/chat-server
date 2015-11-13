@@ -37,10 +37,12 @@ angular.module('chatApp')
       link: function (scope, iElement, iAttrs) {
         iElement.bind("scroll", function(e) {
           if (iElement[0].scrollTop <= 0) {
+            var element = document.getElementById(scope.chats[0]._id);
+            var chatContent = document.getElementById('chatContent');
             scope.loadMore();
-            $timeout(function(){
-              iElement.scrollTop(10);
-            }, 200);
+            $timeout(function () {
+              angular.element(chatContent).scrollTop(angular.element(element)[0].getBoundingClientRect().top - 80);
+            },200);
           }
         })
       }
