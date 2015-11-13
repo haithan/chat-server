@@ -11,7 +11,7 @@
       </div>
     </div>
     <perfect-scrollbar class="scroller row" wheel-propagation="true" wheel-speed="1" min-scrollbar-length="20" data-content id="chatContent" scroll-glue scroll-to-top>
-      <div ng-repeat-start="chat in chats" ng-class="chat.float_class" class="message-wrapper" id="chat-{{::$index}}" >
+      <div ng-repeat-start="chat in chats" ng-class="chat.float_class" class="message-wrapper" id="{{chat._id}}" >
         <img ng-show="chat.avatar_url" fallback-src="/assets/images/default_user.jpg" ng-src={{chat.avatar_url}} alt={{chat.username}}><span class="message-border" ng-class="chat.float_class" ng-bind-html="chat.message | emoji"></span>
       </div>
       <div class="clearfix"></div>
