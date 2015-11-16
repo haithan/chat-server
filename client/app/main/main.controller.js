@@ -13,6 +13,7 @@ angular.module('chatApp')
     var targetAvatarUrl = $rootScope.targetAvatarUrl;
     var targetUserGgIds = '';
     $scope.emojiPopup = false;
+    $scope.isBlocked = false;
     $scope.emojis = ['bowtie', 'smile', 'laughing', 'blush', 'smiley', 'relaxed',
             'smirk', 'heart_eyes', 'kissing_heart', 'kissing_closed_eyes', 'flushed',
             'relieved', 'satisfied', 'grin', 'wink', 'stuck_out_tongue_winking_eye',
@@ -73,6 +74,8 @@ angular.module('chatApp')
     var appendChat = function(data, isLastMsg) {
       if (!data.message) { return; }
 
+      $scope.isBlocked = false;
+
       isLastMsg = typeof isLastMsg !== 'undefined' ? isLastMsg : true;
 
       // decrypt message in case it is the message broadcast from socket
@@ -110,6 +113,17 @@ angular.module('chatApp')
           appendChat(d, false);
         });
       });
+    };
+
+    var showBlockStatus = function(data) {
+      if (!data.targetUserId || data.targetUserId !== targetUserId) { return; }
+
+      $scope.isBlocked = true;
+
+      var chatContent = angular.element(document.getElementById('chatContent'));
+      $timeout(function() {
+        chatContent.scrollTop(chatContent[0].scrollHeight);
+      }, 100)
     }
 
     $scope.sendChat = function() {
@@ -159,10 +173,9 @@ angular.module('chatApp')
     }
 
     socket.on('notification:save', updateNotification);
-
     socket.on('getMessage', getMessage);
-
     socket.on('updateChat', appendChat);
+    socket.on('user:isBlocked', showBlockStatus);
 
     $scope.$on('$destroy', function() {
       socket.removeListener('getMessage', getMessage);

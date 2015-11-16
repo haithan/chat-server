@@ -82,6 +82,8 @@ module.exports = function (socketio) {
     })
 
     socket.on('sendChat', function(data) {
+      if (data.targetUserId === 'undefined') { return; }
+
       var message = Crypto.decrypt(data.message);
 
       var notyMobile = function() {
@@ -113,13 +115,15 @@ module.exports = function (socketio) {
         });
       }
 
+      // check if current user is blocked by target user
       Block.findOne({source_id: data.targetUserId, target_id: socket.userId}, function(err, block) {
-        if (block && block.block && typeof data.targetUserId !== 'undefined'){
+        if (block && block.block) {
+          socket.emit('user:isBlocked', {targetUserId: data.targetUserId});
         } else {
+          // emit event has new message
           socketio.to(socket.room).emit('updateChat', {message: data.message, user_id: socket.userId});
-
+          // save to DB
           Message.create({message: message, user_id: socket.userId, session_id: socket.room});
-
           // emit notify chat to target user by target user's default room id
           if (data.targetUserGgIds !== '') {
             notyMobile();
