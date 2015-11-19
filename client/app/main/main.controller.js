@@ -2,7 +2,7 @@
 
 angular.module('chatApp')
   .controller('MainCtrl', function ($scope, socket, $rootScope, chatUtils, chatFilters, $stateParams,
-                                    Notification, Message, User, Gcm, Match, $timeout, Crypto) {
+                                    Message, User, Gcm, Match, $timeout, Crypto) {
     if($stateParams.roomId == '' || $stateParams.userId == '') {
       return;
     }
@@ -29,7 +29,7 @@ angular.module('chatApp')
     Match.checkRoomPermission(userId, targetUserId, sessionId)
       .then(function(res) {
         if (res.status === 200) {
-          socket.emit('addUser', {room: sessionId, userId: userId});
+          socket.emit('addUser', {room: sessionId, userId: userId, targetUserId: targetUserId});
           $timeout(function(){
             $('#'+ $stateParams.userId).addClass('active');
           },500);
@@ -41,9 +41,6 @@ angular.module('chatApp')
     Gcm.getGcmIds(targetUserId).success(function(data) {
       targetUserGgIds = data.gcm_ids;
     })
-
-    Notification.updateNotificationNum(targetUserId, userId, 0);
-    // end of init
 
     var prepareChat = function(data) {
       var chat = {};
@@ -86,17 +83,6 @@ angular.module('chatApp')
         $scope.chats.push(chat);
       } else {
         $scope.chats.unshift(chat);
-      }
-    };
-
-    var updateNotification = function(data) {
-      if (data && data.from_user_id && data.to_user_id && data.noti_num && data.to_user_id == userId) {
-        var $userRow = $('#' + data.from_user_id);
-        // if user is currently in this room then return
-        if ( $userRow.hasClass('active') ) {
-          Notification.updateNotificationNum(targetUserId, userId, 0);
-          return;
-        }
       }
     };
 
@@ -172,7 +158,6 @@ angular.module('chatApp')
       })
     }
 
-    socket.on('notification:save', updateNotification);
     socket.on('getMessage', getMessage);
     socket.on('updateChat', appendChat);
     socket.on('user:isBlocked', showBlockStatus);
@@ -180,7 +165,6 @@ angular.module('chatApp')
     $scope.$on('$destroy', function() {
       socket.removeListener('getMessage', getMessage);
       socket.removeListener('updateChat', appendChat);
-      socket.removeListener('notification:save', updateNotification);
       socket.emit('user:leaveRoom');
     });
 

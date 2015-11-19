@@ -11,6 +11,7 @@ var Notification = require('../api/notification/notification.model');
 var Block = require('../api/block/block.model');
 var Message = require('../api/message/message.model');
 var Crypto = require('../crypto/crypto');
+var imq = require('../mq/mq');
 
 // When the user disconnects.. perform this
 function onDisconnect(socket) {
@@ -64,6 +65,32 @@ module.exports = function (socketio) {
       console.info('[%s] DISCONNECTED', socket.address);
     });
 
+    var postImq = function(message) {
+      var queue = imq.imq.queue(config.notify_queue);
+
+      queue.post({body: JSON.stringify(message)}, function(error, body) {
+        if (error) {console.log(error);}
+      });
+    }
+
+    var performUpdate = function(fromUserId, toUserId, notiNum) {
+      Notification.findOne({from_user_id: fromUserId, to_user_id: toUserId}, function(err, noti) {
+        if (noti) {
+          if (typeof notiNum !== 'undefined') {
+            noti.noti_num = notiNum;
+          } else {
+            noti.noti_num = noti.noti_num + 1;
+          }
+          noti.save();
+          postImq({from_user_id: fromUserId, to_user_id: toUserId, notiNum: noti.noti_num, room_id: socket.room});
+        } else {
+          var noti_num = typeof notiNum !== 'undefined' ? notiNum : 1;
+          Notification.create({from_user_id: socket.userId, to_user_id: data.targetUserId, noti_num: noti_num});
+          postImq({from_user_id: fromUserId, to_user_id: toUserId, notiNum: noti_num, room_id: socket.room});
+        }
+      });
+    }
+
     socket.on('addUser', function(data) {
       // leave previous room
       if (socket.room) {
@@ -73,13 +100,15 @@ module.exports = function (socketio) {
       socket.userId = data.userId;
       socket.join(socket.room);
 
+      performUpdate(data.targetUserId, socket.userId, 0);
+
       // emit get all messages of this room after join room
       socket.emit('getMessage', {room: socket.room, userId: socket.userId});
     });
 
     socket.on('user:leaveRoom', function () {
       socket.leave(socket.room);
-    })
+    });
 
     socket.on('sendChat', function(data) {
       if (data.targetUserId === 'undefined') { return; }
@@ -102,18 +131,26 @@ module.exports = function (socketio) {
             console.log(result);
           }
         });
-      }
+      };
+
+      var targetUserInRoom = function() {
+        var clients = socketio.sockets.adapter.rooms[socket.room];
+
+        if (clients.length === 0) { return; }
+        for (var clientId in clients) {
+          if (socketio.sockets.connected[clientId].userId == data.targetUserId) {
+            return true;
+          }
+        }
+
+        return false;
+      };
 
       var updateNotification = function() {
-        Notification.findOne({from_user_id: socket.userId, to_user_id: data.targetUserId}, function(err, noti) {
-          if (noti) {
-            noti.noti_num = noti.noti_num + 1;
-            noti.save();
-          } else {
-            Notification.create({from_user_id: socket.userId, to_user_id: data.targetUserId, noti_num: 1});
-          }
-        });
-      }
+        if ( targetUserInRoom() ) { return; }
+
+        performUpdate(socket.userId, data.targetUserId);
+      };
 
       // check if current user is blocked by target user
       Block.findOne({source_id: data.targetUserId, target_id: socket.userId}, function(err, block) {
@@ -133,7 +170,6 @@ module.exports = function (socketio) {
         }
       });
     });
-
     // Call onConnect.
     onConnect(socket);
     console.info('[%s] CONNECTED', socket.address);
