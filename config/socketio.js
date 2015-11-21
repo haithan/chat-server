@@ -115,24 +115,6 @@ module.exports = function (socketio) {
 
       var message = Crypto.decrypt(data.message);
 
-      var notyMobile = function() {
-        var GcmMessage = new nodeGcm.Message();
-        GcmMessage.addNotification('title', 'Bạn có tin nhắn mới');
-        GcmMessage.addNotification('icon', 'ic_notification');
-        GcmMessage.addNotification('body', message);
-
-        var regIds = data.targetUserGgIds;
-        var sender = new nodeGcm.Sender(config.ggSenderId);
-
-        sender.send(GcmMessage, regIds, function(err, result) {
-          if(err) {
-            console.error(err);
-          } else {
-            console.log(result);
-          }
-        });
-      };
-
       var targetUserInRoom = function() {
         var clients = socketio.sockets.adapter.rooms[socket.room];
 
@@ -152,6 +134,26 @@ module.exports = function (socketio) {
         performUpdate(socket.userId, data.targetUserId);
       };
 
+      var notyMobile = function(targetUserGgIds) {
+        if ( targetUserGgIds == '' || targetUserInRoom() ) { return; }
+
+        var GcmMessage = new nodeGcm.Message();
+        GcmMessage.addNotification('title', 'Bạn có tin nhắn mới');
+        GcmMessage.addNotification('icon', 'ic_notification');
+        GcmMessage.addNotification('body', message);
+
+        var regIds = data.targetUserGgIds;
+        var sender = new nodeGcm.Sender(config.ggSenderId);
+
+        sender.send(GcmMessage, regIds, function(err, result) {
+          if(err) {
+            console.error(err);
+          } else {
+            console.log(result);
+          }
+        });
+      };
+
       // check if current user is blocked by target user
       Block.findOne({source_id: data.targetUserId, target_id: socket.userId}, function(err, block) {
         if (block && block.block) {
@@ -162,9 +164,7 @@ module.exports = function (socketio) {
           // save to DB
           Message.create({message: message, user_id: socket.userId, session_id: socket.room});
           // emit notify chat to target user by target user's default room id
-          if (data.targetUserGgIds !== '') {
-            notyMobile();
-          }
+          notyMobile(data.targetUserGgIds);
 
           updateNotification();
         }
