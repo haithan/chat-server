@@ -1,6 +1,6 @@
 var express = require('express');
 
-var logger = require('morgan');
+var logger = require("../utils/logger");
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var compress = require('compression');
@@ -17,7 +17,7 @@ module.exports = function(app, config) {
   // app.set('view engine', 'jade');
 
   // app.use(favicon(config.root + '/public/img/favicon.ico'));
-  app.use(logger('dev'));
+  app.use(require('morgan')({ "stream": logger.stream }));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({
     extended: true
