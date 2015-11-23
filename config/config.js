@@ -26,12 +26,17 @@ var config = {
     app: {
       name: 'chat-server'
     },
-    port: 8123,
+    port: 8124,
     db: 'mongodb://localhost/chat-server-test',
     secret_key: 'a0ef38ee4c364d973a023c1a8a7de51f10d6990ee7412166911c8ddfa5d9',
     main_web: 'lvh.me:3000',
     ggSenderId: 'AIzaSyBmFcDkIMWiNTU8cClehEAR8s5Fr1cSlV4',
-    env: 'test'
+    env: 'test',
+    rails_ip: '103.56.157.70',
+    notify_queue: 'notification',
+    mq_token: 'hgmZjraRGALuOKVAzkSm',
+    mq_id: '56498da54aa03100090000b1',
+    mq_host: 'mq-aws-eu-west-1-1.iron.io'
   },
 
   production: {
