@@ -85,7 +85,7 @@ module.exports = function (socketio) {
           postImq({from_user_id: fromUserId, to_user_id: toUserId, notiNum: noti.noti_num, room_id: socket.room});
         } else {
           var noti_num = typeof notiNum !== 'undefined' ? notiNum : 1;
-          Notification.create({from_user_id: socket.userId, to_user_id: data.targetUserId, noti_num: noti_num});
+          Notification.create({from_user_id: socket.userId, to_user_id: toUserId, noti_num: noti_num});
           postImq({from_user_id: fromUserId, to_user_id: toUserId, notiNum: noti_num, room_id: socket.room});
         }
       });
