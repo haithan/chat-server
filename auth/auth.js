@@ -6,11 +6,16 @@ var User = require('../api/user/user.model');
 var FbInfo = require('../api/fb_info/fb_info.model');
 
 function requestFromRailsServer(req, res, cb) {
-  var ip = req.ip.split("f:")[1];
+  var ip = req.ip;
   if (ip === config.rails_ip || ip === '127.0.0.1') {
     cb(req, res);
   } else {
-    res.sendStatus(500);
+    ip = req.ip.split("f:")[1];
+    if (ip === config.rails_ip || ip === '127.0.0.1') {
+      cb(req, res);
+    } else {
+      return res.sendStatus(500);
+    }
   }
 };
 
